@@ -2,7 +2,12 @@
 
 <ul>
   <li *ngFor="let customer of customers">
-    {{customer.id}} - {{customer.username}} - {{customer.email}}
+    <span (click)="onSelect(customer)">{{customer.id}} - {{customer.username}} - {{customer.email}}</span>
   </li>
 </ul>
 
+<div *ngIf="selectedCustomer">
+  <h2>{{selectedCustomer.username | uppercase}} Information</h2>
+  <div>id: {{selectedCustomer.id}}</div>
+  <div>email: {{selectedCustomer.email}}</div>
+</div>
