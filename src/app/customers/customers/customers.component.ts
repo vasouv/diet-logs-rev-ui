@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CUSTOMERS} from "../../mock-users";
 import {Customer} from "../../customer";
 
@@ -11,11 +11,17 @@ import {Customer} from "../../customer";
 export class CustomersComponent implements OnInit {
 
   customers: Customer[] = [];
+  selectedCustomer?: Customer;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
     this.customers = CUSTOMERS;
+  }
+
+  onSelect(customer: Customer) {
+    this.selectedCustomer = customer;
   }
 
 }
