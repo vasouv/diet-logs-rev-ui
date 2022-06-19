@@ -1,6 +1,5 @@
 <script>
-    import {onMount} from "svelte";
-    import Chart from "chart.js/auto/auto.js";
+    import MeasurementChart from "../MeasurementChart.svelte";
 
     export let params = {};
 
@@ -31,37 +30,6 @@
         }
     ]
 
-    let measurementChart;
-
-    const labels = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-    ];
-
-    const data = {
-        labels: labels,
-        datasets: [{
-            label: 'My First dataset',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [0, 10, 5, 2, 20, 30, 45],
-        }]
-    };
-
-    const config = {
-        type: 'line',
-        data: data,
-        options: {}
-    };
-
-    onMount(() => {
-        const ctx = measurementChart.getContext("2d");
-        var myChart = new Chart(ctx, config);
-    })
 </script>
 
 <h1>Customer {params.id} Page</h1>
@@ -106,7 +74,5 @@
 
 <article>
     <header>Measurements Chart</header>
-    <div>
-        <canvas bind:this={measurementChart}></canvas>
-    </div>
+    <MeasurementChart/>
 </article>
