@@ -36,6 +36,7 @@
             <td>{customer.id}</td>
             <td>{customer.username}</td>
             <td>{customer.email}</td>
+            <td><a href="#/customer/{customer.id}">Profile</a></td>
         </tr>
     {/each}
 </table>
