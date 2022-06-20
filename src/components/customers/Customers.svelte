@@ -1,26 +1,21 @@
 <script>
-    let customers = [
-        {
-            id: 1,
-            username: "vasouv",
-            email: "vasouv@mail.com"
-        },
-        {
-            id: 2,
-            username: "aggela",
-            email: "aggela@mail.com"
-        },
-        {
-            id: 3,
-            username: "elina",
-            email: "elina@mail.com"
-        },
-        {
-            id: 4,
-            username: "apostolis",
-            email: "apostolis@mail.com"
-        }
-    ]
+    import {onMount, onDestroy} from "svelte";
+
+    let customers = [];
+
+    async function getCustomers() {
+        let usersResponse = await fetch("https://jsonplaceholder.typicode.com/users");
+        customers = await usersResponse.json();
+    }
+
+    onMount(() => {
+        getCustomers();
+    })
+
+    onDestroy(() => {
+        customers = [];
+    })
+
 </script>
 
 <h1>Customers Page</h1>
