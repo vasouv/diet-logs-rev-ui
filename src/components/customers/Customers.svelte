@@ -1,13 +1,14 @@
 <script>
     import {onMount, onDestroy} from "svelte";
+    import {environmentProperties} from "../../environment-properties.js"
+
+    const usersEndpoint = `${environmentProperties.backend}/users`;
 
     let customers = [];
 
-    const backend = "http://localhost:8080/users";
-
     async function getCustomers() {
         try {
-            let usersResponse = await fetch(backend);
+            let usersResponse = await fetch(usersEndpoint);
             customers = await usersResponse.json();
         } catch (e) {
             console.error(e);
