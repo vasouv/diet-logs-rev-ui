@@ -3,9 +3,15 @@
 
     let customers = [];
 
+    const backend = "http://localhost:8080/users";
+
     async function getCustomers() {
-        let usersResponse = await fetch("https://jsonplaceholder.typicode.com/users");
-        customers = await usersResponse.json();
+        try {
+            let usersResponse = await fetch(backend);
+            customers = await usersResponse.json();
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     onMount(() => {
@@ -20,18 +26,22 @@
 
 <h1>Customers Page</h1>
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>Email</th>
-    </tr>
-    {#each customers as customer}
+{#if customers.length == 0}
+    No Data
+{:else }
+    <table>
         <tr>
-            <td>{customer.id}</td>
-            <td>{customer.username}</td>
-            <td>{customer.email}</td>
-            <td><a href="#/customer/{customer.id}">Profile</a></td>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
         </tr>
-    {/each}
-</table>
+        {#each customers as customer}
+            <tr>
+                <td>{customer.id}</td>
+                <td>{customer.username}</td>
+                <td>{customer.email}</td>
+                <td><a href="#/customer/{customer.id}">Profile</a></td>
+            </tr>
+        {/each}
+    </table>
+{/if}
