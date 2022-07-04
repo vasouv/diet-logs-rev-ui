@@ -21,7 +21,13 @@
 
             fullName = `${selectedCustomer.info.name} ${selectedCustomer.info.surname}`;
             age = new Date().getFullYear() - new Date(selectedCustomer.info.dateOfBirth).getFullYear();
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
+    async function getMeasurements() {
+        try {
             let measurementsResponse = await fetch(measurementsEndpoint);
             measurements = await measurementsResponse.json();
         } catch (e) {
@@ -31,10 +37,12 @@
 
     onMount(() => {
         getCustomer();
+        getMeasurements();
     });
 
     onDestroy(() => {
         selectedCustomer = {};
+        measurements = [];
     });
 
 </script>
