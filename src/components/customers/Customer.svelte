@@ -7,10 +7,12 @@
     export let params = {};
 
     const userEndpoint = `${environmentProperties.backend}/users/${params.id}/info`;
+    const measurementsEndpoint = `${environmentProperties.backend}/measurements/${params.id}`;
 
     let selectedCustomer;
     let fullName = "";
     let age = 0;
+    let measurements = [];
 
     async function getCustomer() {
         try {
@@ -19,6 +21,9 @@
 
             fullName = `${selectedCustomer.info.name} ${selectedCustomer.info.surname}`;
             age = new Date().getFullYear() - new Date(selectedCustomer.info.dateOfBirth).getFullYear();
+
+            let measurementsResponse = await fetch(measurementsEndpoint);
+            measurements = await measurementsResponse.json();
         } catch (e) {
             console.error(e);
         }
@@ -31,12 +36,6 @@
     onDestroy(() => {
         selectedCustomer = {};
     });
-
-    const measurements = [
-        { date: "2022-01-31", weight: 110.1, bmi: 37.4 },
-        { date: "2022-02-14", weight: 107.8, bmi: 36.1 },
-        { date: "2022-06-17", weight: 104.0, bmi: 34.4 }
-    ]
 
 </script>
 
@@ -68,26 +67,33 @@
         </section>
     </article>
 
-    <article>
-        <header>Measurements</header>
-        <table>
-            <tr>
-                <th>Date</th>
-                <th>Weight</th>
-                <th>BMI</th>
-            </tr>
-            {#each measurements as measurement}
+    {#if measurements.length == 0}
+        <article>
+            <header>Measurements</header>
+            No Data
+        </article>
+    {:else }
+        <article>
+            <header>Measurements</header>
+            <table>
                 <tr>
-                    <td>{measurement.date}</td>
-                    <td>{measurement.weight}</td>
-                    <td>{measurement.bmi}</td>
+                    <th>Date</th>
+                    <th>Weight</th>
+                    <th>BMI</th>
                 </tr>
-            {/each}
-        </table>
-    </article>
+                {#each measurements as measurement}
+                    <tr>
+                        <td>{measurement.date}</td>
+                        <td>{measurement.weight}</td>
+                        <td>{measurement.bmi}</td>
+                    </tr>
+                {/each}
+            </table>
+        </article>
 
-    <article>
-        <header>Measurements Chart</header>
-        <MeasurementChart/>
-    </article>
+        <article>
+            <header>Measurements Chart</header>
+            <MeasurementChart/>
+        </article>
+    {/if}
 {/if}
