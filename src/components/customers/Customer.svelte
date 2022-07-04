@@ -1,27 +1,27 @@
 <script>
     import {onMount, onDestroy} from "svelte";
+    import {environmentProperties} from "../../environment-properties.js";
 
     import MeasurementChart from "../MeasurementChart.svelte";
 
     export let params = {};
 
-    let selectedCustomer = {};
+    const userEndpoint = `${environmentProperties.backend}/users/${params.id}/info`;
+
+    let selectedCustomer;
     let fullName = "";
+    let age = 0;
 
     async function getCustomer() {
-        let userResponse = await fetch(`https://jsonplaceholder.typicode.com/users/${params.id}`)
-        selectedCustomer = await userResponse.json();
+        try {
+            let userResponse = await fetch(userEndpoint);
+            selectedCustomer = await userResponse.json();
 
-        // fake full name, gender and date of birth
-        let nameList = selectedCustomer.name.split(" ");
-        selectedCustomer.name = nameList[0];
-        selectedCustomer.surname = nameList[1];
-        selectedCustomer.dateOfBirth = "1987-08-04";
-        selectedCustomer.gender = Math.random() < 0.5 ? "M" : "F";
-        selectedCustomer.height = 1.74;
-        selectedCustomer.weight = 110.1;
-
-        fullName = `${nameList[0]} ${nameList[1]}`;
+            fullName = `${selectedCustomer.info.name} ${selectedCustomer.info.surname}`;
+            age = new Date().getFullYear() - new Date(selectedCustomer.info.dateOfBirth).getFullYear();
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     onMount(() => {
@@ -29,7 +29,7 @@
     });
 
     onDestroy(() => {
-        selectedCustomer = null;
+        selectedCustomer = {};
     });
 
     const measurements = [
@@ -40,47 +40,54 @@
 
 </script>
 
-<h1>{fullName.toUpperCase()}</h1>
+{#if !selectedCustomer}
+    No Data
+{:else }
+    <h1>{fullName.toUpperCase()}</h1>
+    <article>
+        <header>Basic Information</header>
+        <section class="grid">
+            <p>First name: {selectedCustomer.info.name}</p>
+            <p>Surname: {selectedCustomer.info.surname}</p>
+        </section>
+        <section class="grid">
+            <p>Gender: {selectedCustomer.info.gender}</p>
+            <p>Birth: {selectedCustomer.info.dateOfBirth}</p>
+        </section>
+        <section class="grid">
+            <p>Email: {selectedCustomer.email}</p>
+            <p>Age: {age}</p>
+        </section>
+    </article>
 
-<article>
-    <header>Basic Information</header>
-    <section class="grid">
-        <p>First name: {selectedCustomer.name}</p>
-        <p>Surname: {selectedCustomer.surname}</p>
-    </section>
-    <section class="grid">
-        <p>Gender: {selectedCustomer.gender}</p>
-        <p>Birth: {selectedCustomer.dateOfBirth}</p>
-    </section>
-</article>
+    <article>
+        <header>Body Information</header>
+        <section class="grid">
+            <p>Height: {selectedCustomer.info.height} m</p>
+            <p>Weight: {selectedCustomer.info.weight} kg</p>
+        </section>
+    </article>
 
-<article>
-    <header>Body Information</header>
-    <section class="grid">
-        <p>Height: {selectedCustomer.height} m</p>
-        <p>Weight: {selectedCustomer.weight} kg</p>
-    </section>
-</article>
-
-<article>
-    <header>Measurements</header>
-    <table>
-        <tr>
-            <th>Date</th>
-            <th>Weight</th>
-            <th>BMI</th>
-        </tr>
-        {#each measurements as measurement}
+    <article>
+        <header>Measurements</header>
+        <table>
             <tr>
-                <td>{measurement.date}</td>
-                <td>{measurement.weight}</td>
-                <td>{measurement.bmi}</td>
+                <th>Date</th>
+                <th>Weight</th>
+                <th>BMI</th>
             </tr>
-        {/each}
-    </table>
-</article>
+            {#each measurements as measurement}
+                <tr>
+                    <td>{measurement.date}</td>
+                    <td>{measurement.weight}</td>
+                    <td>{measurement.bmi}</td>
+                </tr>
+            {/each}
+        </table>
+    </article>
 
-<article>
-    <header>Measurements Chart</header>
-    <MeasurementChart/>
-</article>
+    <article>
+        <header>Measurements Chart</header>
+        <MeasurementChart/>
+    </article>
+{/if}
