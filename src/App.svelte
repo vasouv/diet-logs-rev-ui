@@ -7,12 +7,14 @@
     import NavBar from "./components/navigation/NavBar.svelte";
     import Dashboard from "./components/dashboard/Dashboard.svelte";
     import NotFound from "./components/404/NotFound.svelte";
+    import CustomerNew from "./components/customers/CustomerNew.svelte";
 
     let routes = {
         "/": Dashboard,
         "/customers": Customers,
         "/customer/:id": Customer,
         "/appointments": Appointments,
+        "/customer-new": CustomerNew,
         "*": NotFound
     }
 
